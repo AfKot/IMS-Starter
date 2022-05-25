@@ -1,0 +1,1 @@
+INSERT INTO `items` (`item_name`, `item_price`, `stock`) VALUES ('Wallet', 24.50, 10);

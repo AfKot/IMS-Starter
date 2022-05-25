@@ -37,6 +37,25 @@ public class Utils {
 	public String getString() {
 		return scanner.nextLine();
 	}
+	
+//	public int getInt() {
+//		return scanner.nextInt();
+//	}
+	
+	public Integer getInt() {
+		String input = null;
+		Integer intInput = null;
+		do {
+			try {
+				input = getString();
+				intInput = Integer.parseInt(input);
+			} catch (NumberFormatException nfe) {
+				LOGGER.info("Error - Please enter a number");
+			}
+		} while (intInput == null);
+		return intInput;
+	}
+	
 
 	public Double getDouble() {
 		String input = null;
