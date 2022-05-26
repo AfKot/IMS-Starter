@@ -27,7 +27,21 @@ public class Order {
 		this.progress = progress;
 		this.total = total;
 	}
+	
+	public Order(Long id, Long customer_id, String progress) {
+		super();
+		this.id = id;
+		this.customer_id = customer_id;
+		this.progress = progress;
+	}
+	
+	
 
+	public Order(Long customer_id, String progress) {
+		super();
+		this.customer_id = customer_id;
+		this.progress = progress;
+	}
 
 	public Order(Long customer_id) {
 		super();

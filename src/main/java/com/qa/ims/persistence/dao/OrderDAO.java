@@ -18,18 +18,62 @@ import com.qa.ims.utils.DBUtils;
 public class OrderDAO implements Dao<Order> {
 	
 	public static final Logger LOGGER = LogManager.getLogger();
+	
+private ItemDAO itemDAO;
+
+	public OrderDAO(ItemDAO itemDAO) {
+	super();
+	this.itemDAO = itemDAO;
+}
+
+	// method to add all the items together
+	public List<Item> findItems(Long id) throws SQLException{
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement("SELECT * FROM indexing WHERE order_id = ?");) {
+			statement.setLong(1, id);
+			try (ResultSet results = statement.executeQuery();) {
+				List<Long> itemIds = new ArrayList<>();
+				while (results.next()) {
+					itemIds.add(results.getLong("item_id"));
+				}
+				List<Item> itemList = new ArrayList<>();
+				for (int i = 0; i<itemIds.size(); i++) {
+					Item itemRead = itemDAO.read(itemIds.get(i));
+					itemList.add(itemRead);
+				}
+				return itemList;
+			}  
+		} catch (SQLException e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		} return null;
+			
+	}
 
 	@Override
 	public Order modelFromResultSet(ResultSet resultSet) throws SQLException {
 		Long id = resultSet.getLong("id");
 		Long customer_id = resultSet.getLong("customer_id");
-		ArrayList<Item> allItems = resultSet.getArray(allItems);
+		List<Item> allItems = findItems(id);
 		String progress = resultSet.getString("progress");
-		Double total = resultSet.getDouble("total");
-		return new Order(id, customer_id, allItems, progress, total);
+		List<Double> total = new ArrayList<>();
+		
+		for (int i = 0; i<allItems.size(); i++) {
+			Double cost = allItems.get(i).getItemPrice();
+			total.add(cost);
+		}
+		Double cost2 = total.stream().reduce((a,b) -> a+b).get();
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection
+						.prepareStatement("UPDATE orders SET total = ? WHERE id = ?");) {
+			statement.setDouble(1, cost2);
+			statement.setLong(2, id);
+			statement.executeUpdate();
+		}
+		return new Order(id, customer_id, allItems, progress, cost2);
 	}
 
-	// Reads all items from the database, @return A list of items
+	// Reads all orders from the database
 	@Override
 	public List<Order> readAll() {
 		try (Connection connection = DBUtils.getInstance().getConnection();
@@ -60,14 +104,14 @@ public class OrderDAO implements Dao<Order> {
 		return null;
 	}
 
-	//Creates an item in the database, @param item - takes in an item object. id will be ignored
+	//Creates an order in the database
 	@Override
 	public Order create(Order order) {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				PreparedStatement statement = connection
-						.prepareStatement("INSERT INTO orders(progress, total) VALUES (?, ?)");) {
-			statement.setString(1, order.getProgress());
-			statement.setDouble(2, order.getTotal());
+						.prepareStatement("INSERT INTO orders(customer_id, progress) VALUES (?, ?)");) {
+			statement.setLong(1, order.getCustomer_id());
+			statement.setString(2, order.getProgress());
 			statement.executeUpdate();
 			return readLatest();
 		} catch (Exception e) {
@@ -93,15 +137,14 @@ public class OrderDAO implements Dao<Order> {
 		return null;
 	}
 
-	//Updates an item in the database, @param item - takes in an item object, the id field will be used to update that item in the database@return
-	 
+	//Updates an order in the database	 
 	@Override
 	public Order update(Order order) {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				PreparedStatement statement = connection
-						.prepareStatement("UPDATE orders SET progress = ?, total = ? WHERE id = ?");) {
-			statement.setString(1, order.getProgress());
-			statement.setDouble(2, order.getTotal());
+						.prepareStatement("UPDATE orders SET customer_id = ?, progress = ? WHERE id = ?");) {
+			statement.setLong(1, order.getCustomer_id());
+			statement.setString(2, order.getProgress());
 			statement.setLong(3, order.getId());
 			statement.executeUpdate();
 			return read(order.getId());
@@ -112,7 +155,7 @@ public class OrderDAO implements Dao<Order> {
 		return null;
 	}
 
-	//Deletes an item in the database, @param id - id of the item
+	//Deletes an entire order
 	@Override
 	public int delete(long id) {
 		try (Connection connection = DBUtils.getInstance().getConnection();
@@ -126,4 +169,20 @@ public class OrderDAO implements Dao<Order> {
 		return 0;
 	}
 
+	//add items to order
+	public Order addingItems(Long orderId, Long itemId) {
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection
+						.prepareStatement("INSERT INTO indexing(order_id, item_id) VALUES (?, ?)");) {
+			statement.setLong(1, orderId);
+			statement.setLong(2, itemId);
+			statement.executeUpdate();
+			return readLatest();
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+	}	
+	
 }
