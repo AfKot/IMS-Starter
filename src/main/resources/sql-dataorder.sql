@@ -1,0 +1,1 @@
+INSERT INTO `ims`.`orders` (`customer_id`, `progress`) VALUES (1, 'In Progress');

@@ -18,7 +18,7 @@ public class ItemDAOTest {
 	@Before
 	public void setup() {
 		DBUtils.connect();
-		DBUtils.getInstance().init("src/test/resources/sql-schemaitem.sql", "src/test/resources/sql-dataitem.sql");
+		DBUtils.getInstance().init("src/test/resources/sql-schema.sql", "src/test/resources/sql-dataitem.sql");
 	}
 	
 	//Testing to see if item created matches what I expect to be created

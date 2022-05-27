@@ -1,9 +1,0 @@
-DROP TABLE IF EXISTS `items`;
-
-CREATE TABLE IF NOT EXISTS `items` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `item_name` VARCHAR(40) DEFAULT NULL,
-    `item_price` DECIMAL(5,2) DEFAULT NULL,
-    `stock` INT(11) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-);
