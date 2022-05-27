@@ -28,6 +28,23 @@ public class Order {
 		this.total = total;
 	}
 	
+	
+	
+	public Order(Long customer_id, List<Item> allItems, String progress) {
+		super();
+		this.customer_id = customer_id;
+		this.allItems = allItems;
+		this.progress = progress;
+	}
+
+	public Order(Long id, Long customer_id, List<Item> allItems, String progress) {
+		super();
+		this.id = id;
+		this.customer_id = customer_id;
+		this.allItems = allItems;
+		this.progress = progress;
+	}
+
 	public Order(Long id, Long customer_id, String progress) {
 		super();
 		this.id = id;

@@ -58,6 +58,8 @@ private ItemDAO itemDAO;
 		String progress = resultSet.getString("progress");
 		List<Double> total = new ArrayList<>();
 		
+		if (allItems.size()>=1) {
+			
 		for (int i = 0; i<allItems.size(); i++) {
 			Double cost = allItems.get(i).getItemPrice();
 			total.add(cost);
@@ -71,7 +73,11 @@ private ItemDAO itemDAO;
 			statement.executeUpdate();
 		}
 		return new Order(id, customer_id, allItems, progress, cost2);
+	} else {
+		return new Order(id, customer_id, allItems, progress, 0D);
 	}
+		
+}
 
 	// Reads all orders from the database
 	@Override

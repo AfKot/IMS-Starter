@@ -48,7 +48,7 @@ public class OrderController implements CrudController<Order> {
 		LOGGER.info("Please enter the id of the order you would like to update");
 		Long id = utils.getLong();
 		
-		LOGGER.info("What would you like to update, Customer or Progress Status or Items");
+		LOGGER.info("What would you like to update, Customer or Progress or Items");
 		
 		String scan1 = utils.getString();
 		Order nOrder = orderDAO.read(id);
