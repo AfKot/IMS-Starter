@@ -1,19 +1,25 @@
-Coverage: 34%
-# Project Title
+Coverage: 80.1%
+# IMS Starter Project 
 
-One Paragraph of project description goes here
+Created a project where I made a management system consisting of Customers, Items and Orders. 
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Forked the project from github.
+Cloned the repo containing the project files.
+Opened the project within Eclipse.
+Created and moved into a Dev branch.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+I had to install:
+JUNIT Testing, Mockito testing by adding the dependencies into the pom.xml file.
+The dependencies were found on https://mvnrepository.com/
 
-```
-Give examples
-```
+I had to install MySQL (and Workbench) in order to have a database that I could use.
+
+I had to install Git BASH to access and update the repo.
+
 
 ### Installing
 
@@ -75,6 +81,7 @@ We use [SemVer](http://semver.org/) for versioning.
 ## Authors
 
 * **Chris Perrins** - *Initial work* - [christophperrins](https://github.com/christophperrins)
+* **Afzal Kotadia** - Orders, Items and indexing. 
 
 ## License
 
